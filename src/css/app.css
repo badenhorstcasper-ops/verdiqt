@@ -1,4 +1,4 @@
-    :root {
+:root {
   --bur: #6B1E2E;
   --bur-l: #F2E8EA;
   --bur-d: #3D0F1A;
@@ -565,5 +565,3 @@ body {
   #page-content { padding: 0; overflow: visible; }
   .card { border: 0.5px solid #ccc; page-break-inside: avoid; }
 }
-
-    

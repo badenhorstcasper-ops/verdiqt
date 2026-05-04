@@ -1,567 +1,674 @@
-:root {
-  --bur: #6B1E2E;
-  --bur-l: #F2E8EA;
-  --bur-d: #3D0F1A;
-  --bur-border: #D4A0AC;
-  --gold: #C9A07A;
-  --white: #ffffff;
-  --off-white: #F9F6F7;
-  --dg: #2C2C2C;
-  --mg: #666666;
-  --lg: #CCCCCC;
-  --green: #166534;
-  --green-l: #F0FDF4;
-  --green-b: #BBF7D0;
-  --amber: #92400E;
-  --amber-l: #FFFBEB;
-  --amber-b: #FDE68A;
-  --red: #A32D2D;
-  --red-l: #FEF2F2;
-  --red-b: #FECACA;
-  --blue: #1E40AF;
-  --blue-l: #EFF6FF;
-  --blue-b: #BFDBFE;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  --sidebar-w: 200px;
-  --transition: 0.15s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --white: #1C1C1C;
-    --off-white: #252525;
-    --dg: #E8E8E8;
-    --mg: #AAAAAA;
-    --lg: #444444;
-    --bur-l: #2A0E16;
-    --bur-border: #6B1E2E;
-    --green-l: #0A2416;
-    --amber-l: #1E1206;
-    --red-l: #1E0A0A;
-    --blue-l: #0C1A3A;
-  }
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { font-size: 16px; -webkit-text-size-adjust: 100%; }
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  color: var(--dg);
-  background: var(--off-white);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* ── LAYOUT ───────────────────────────────────────────────── */
-
-#app-shell {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-#sidebar {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  background: var(--bur);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow-y: auto;
-  transition: transform var(--transition);
-  z-index: 100;
-}
-
-#main-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: 100vh;
-  overflow: hidden;
-}
-
-#topbar {
-  background: var(--white);
-  border-bottom: 0.5px solid var(--lg);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  min-height: 52px;
-}
-
-#page-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ── SIDEBAR ──────────────────────────────────────────────── */
-
-#sidebar-logo {
-  padding: 16px 14px 14px;
-  border-bottom: 0.5px solid rgba(255,255,255,0.15);
-  flex-shrink: 0;
-}
-#sidebar-logo .logo-name {
-  font-family: Georgia, serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-}
-#sidebar-logo .logo-tag {
-  font-size: 10px;
-  color: rgba(255,255,255,0.4);
-  margin-top: 2px;
-  line-height: 1.4;
-}
-
-#sidebar-nav { flex: 1; padding: 8px 0; overflow-y: auto; }
-
-.nav-section {
-  font-size: 9px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 10px 14px 3px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-size: 12px;
-  color: rgba(255,255,255,0.65);
-  border-left: 3px solid transparent;
-  transition: background var(--transition), color var(--transition);
-  text-decoration: none;
-  user-select: none;
-}
-.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
-.nav-item.active { background: rgba(255,255,255,0.13); color: #fff; border-left-color: #fff; }
-.nav-item .nav-badge {
-  margin-left: auto;
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  font-size: 9px;
-  padding: 1px 6px;
-  border-radius: 10px;
-  min-width: 18px;
-  text-align: center;
-}
-.nav-item .nav-badge.red { background: var(--red); }
-.nav-item .nav-badge.amber { background: #92400E; }
-
-#sidebar-footer {
-  padding: 10px 14px;
-  border-top: 0.5px solid rgba(255,255,255,0.1);
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  line-height: 1.5;
-  flex-shrink: 0;
-}
-
-/* ── TOPBAR ───────────────────────────────────────────────── */
-
-#page-title { font-size: 15px; font-weight: 500; color: var(--dg); }
-#menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-#menu-toggle span { display: block; width: 20px; height: 2px; background: var(--dg); margin: 4px 0; border-radius: 1px; }
-
-/* ── CARDS ────────────────────────────────────────────────── */
-
-.card {
-  background: var(--white);
-  border: 0.5px solid var(--lg);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 14px;
-}
-.card-title {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--dg);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.card-title::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--bur);
-  flex-shrink: 0;
-}
-
-/* ── STATS ────────────────────────────────────────────────── */
-
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 14px; }
-.stat-card { background: var(--off-white); border-radius: var(--radius-md); padding: 12px 14px; }
-.stat-label { font-size: 10px; color: var(--mg); margin-bottom: 4px; }
-.stat-value { font-size: 22px; font-weight: 500; color: var(--dg); }
-.stat-value.bur { color: var(--bur); }
-.stat-value.green { color: var(--green); }
-.stat-value.amber { color: var(--amber); }
-.stat-value.red { color: var(--red); }
-
-/* ── BUTTONS ──────────────────────────────────────────────── */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 0.5px solid var(--lg);
-  background: var(--white);
-  color: var(--dg);
-  transition: background var(--transition);
-  text-decoration: none;
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn:hover { background: var(--off-white); }
-.btn:active { transform: scale(0.98); }
-.btn-primary { background: var(--bur); color: #fff; border-color: var(--bur); }
-.btn-primary:hover { background: #8B2840; }
-.btn-green { background: var(--green); color: #fff; border-color: var(--green); }
-.btn-amber { background: var(--amber); color: #fff; border-color: var(--amber); }
-.btn-danger { background: var(--red); color: #fff; border-color: var(--red); }
-.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-
-/* ── FORM ELEMENTS ────────────────────────────────────────── */
-
-.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.field label { font-size: 11px; color: var(--mg); font-weight: 500; }
-.field input,
-.field select,
-.field textarea {
-  font-size: 13px;
-  padding: 9px 11px;
-  border: 0.5px solid var(--lg);
-  border-radius: var(--radius-md);
-  background: var(--white);
-  color: var(--dg);
-  font-family: Arial, sans-serif;
-  transition: border-color var(--transition);
-  -webkit-appearance: none;
-}
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  outline: none;
-  border-color: var(--bur);
-  box-shadow: 0 0 0 2px rgba(107,30,46,0.12);
-}
-.field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
-.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-
-/* ── PILLS ────────────────────────────────────────────────── */
-
-.pill {
-  display: inline-block;
-  padding: 2px 9px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 500;
-}
-.pill-active { background: var(--green-l); color: var(--green); border: 0.5px solid var(--green-b); }
-.pill-amber { background: var(--amber-l); color: var(--amber); border: 0.5px solid var(--amber-b); }
-.pill-red { background: var(--red-l); color: var(--red); border: 0.5px solid var(--red-b); }
-.pill-bur { background: var(--bur-l); color: var(--bur); border: 0.5px solid var(--bur-border); }
-.pill-grey { background: var(--off-white); color: var(--mg); border: 0.5px solid var(--lg); }
-.pill-blue { background: var(--blue-l); color: var(--blue); border: 0.5px solid var(--blue-b); }
-
-/* ── NOTIFICATIONS ────────────────────────────────────────── */
-
-.notif { padding: 10px 13px; border-radius: var(--radius-md); font-size: 12px; margin-bottom: 12px; line-height: 1.6; }
-.notif-green { background: var(--green-l); border: 0.5px solid var(--green-b); color: var(--green); }
-.notif-amber { background: var(--amber-l); border: 0.5px solid var(--amber-b); color: var(--amber); }
-.notif-red { background: var(--red-l); border: 0.5px solid var(--red-b); color: var(--red); }
-.notif-blue { background: var(--blue-l); border: 0.5px solid var(--blue-b); color: var(--blue); }
-.notif-bur { background: var(--bur-l); border: 0.5px solid var(--bur-border); color: var(--bur); }
-
-/* ── TABLES ───────────────────────────────────────────────── */
-
-.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.data-table th { text-align: left; padding: 7px 10px; font-size: 10px; font-weight: 500; color: var(--mg); border-bottom: 0.5px solid var(--lg); }
-.data-table td { padding: 9px 10px; border-bottom: 0.5px solid var(--lg); color: var(--dg); vertical-align: middle; }
-.data-table tr:last-child td { border-bottom: none; }
-.data-table tbody tr { cursor: pointer; transition: background var(--transition); }
-.data-table tbody tr:hover td { background: var(--off-white); }
-
-/* ── SCREENS ──────────────────────────────────────────────── */
-
-.screen { display: none; animation: fadeIn 0.18s ease; }
-.screen.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-/* ── CHECKLIST ────────────────────────────────────────────── */
-
-.checklist { display: flex; flex-direction: column; gap: 6px; }
-.check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 8px 11px;
-  border: 0.5px solid var(--lg);
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  color: var(--dg);
-  cursor: pointer;
-  line-height: 1.5;
-  transition: background var(--transition);
-}
-.check-item:hover { background: var(--off-white); }
-.check-item input[type=checkbox] { accent-color: var(--bur); width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
-.check-item.checked { color: var(--mg); }
-
-/* ── UPLOAD ZONE ──────────────────────────────────────────── */
-
-.upload-zone {
-  border: 1.5px dashed var(--bur-border);
-  border-radius: var(--radius-lg);
-  padding: 28px 20px;
-  text-align: center;
-  cursor: pointer;
-  background: var(--bur-l);
-  transition: border-color var(--transition), background var(--transition);
-}
-.upload-zone:hover { border-color: var(--bur); }
-.upload-zone.dragover { border-color: var(--bur); background: var(--bur-l); }
-.upload-zone-title { font-size: 13px; font-weight: 500; color: var(--bur); margin-bottom: 4px; }
-.upload-zone-sub { font-size: 11px; color: var(--mg); }
-.upload-methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-.upload-method { border: 0.5px solid var(--lg); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; cursor: pointer; background: var(--white); transition: border-color var(--transition), background var(--transition); }
-.upload-method:hover { border-color: var(--bur-border); background: var(--bur-l); }
-.upload-method-icon { font-size: 18px; color: var(--bur); margin-bottom: 5px; }
-.upload-method-label { font-size: 11px; font-weight: 500; color: var(--dg); }
-.upload-method-sub { font-size: 10px; color: var(--mg); margin-top: 2px; }
-
-/* ── CCMA TRACKER ─────────────────────────────────────────── */
-
-.ccma-card { border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; border: 0.5px solid var(--lg); }
-.ccma-card.safe { background: var(--green-l); border-color: var(--green-b); }
-.ccma-card.amber { background: var(--amber-l); border-color: var(--amber-b); }
-.ccma-card.danger { background: var(--red-l); border-color: var(--red-b); }
-.ccma-card.closed { background: var(--off-white); opacity: 0.65; }
-.ccma-countdown { font-size: 30px; font-weight: 500; }
-.ccma-countdown.safe { color: var(--green); }
-.ccma-countdown.amber { color: var(--amber); }
-.ccma-countdown.danger { color: var(--red); }
-.progress-bar { height: 5px; border-radius: 3px; background: var(--lg); overflow: hidden; margin-top: 8px; }
-.progress-fill { height: 100%; border-radius: 3px; }
-.progress-fill.safe { background: var(--green); }
-.progress-fill.amber { background: var(--amber); }
-.progress-fill.danger { background: var(--red); }
-
-/* ── DOCUMENT PREVIEW ─────────────────────────────────────── */
-
-.doc-preview {
-  background: var(--off-white);
-  border: 0.5px solid var(--lg);
-  border-radius: var(--radius-md);
-  padding: 20px 24px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--dg);
-  min-height: 200px;
-  position: relative;
-}
-.doc-preview.watermark::after {
-  content: "AI DRAFT — AWAITING APPROVAL";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-30deg);
-  font-size: 16px;
-  font-weight: 700;
-  color: rgba(107,30,46,0.07);
-  pointer-events: none;
-  text-align: center;
-  width: 280px;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-/* ── APPROVAL GATE ────────────────────────────────────────── */
-
-.approval-gate { border: 2px solid var(--bur); border-radius: var(--radius-lg); padding: 16px; background: var(--bur-l); }
-.approval-gate-title { font-size: 13px; font-weight: 500; color: var(--bur); margin-bottom: 8px; }
-
-/* ── INVOICE ──────────────────────────────────────────────── */
-
-.invoice-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
-.invoice-table th { text-align: left; padding: 7px 10px; background: var(--bur); color: #fff; font-size: 11px; font-weight: 500; }
-.invoice-table td { padding: 7px 10px; border-bottom: 0.5px solid var(--lg); color: var(--dg); }
-.invoice-table tr:last-child td { border-bottom: none; }
-.invoice-total-box { background: var(--bur-l); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 12px 16px; text-align: right; }
-
-/* ── CLIENT CARD ──────────────────────────────────────────── */
-
-.client-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0.5px solid var(--lg); border-radius: var(--radius-md); cursor: pointer; margin-bottom: 6px; transition: border-color var(--transition), background var(--transition); }
-.client-row:hover { border-color: var(--bur-border); background: var(--bur-l); }
-.client-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bur); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #fff; flex-shrink: 0; }
-.client-name { font-size: 13px; font-weight: 500; color: var(--dg); }
-.client-sub { font-size: 11px; color: var(--mg); margin-top: 1px; }
-
-/* ── RESPONSIVE — MOBILE ──────────────────────────────────── */
-
-@media (max-width: 680px) {
-  :root { --sidebar-w: 240px; }
-
-  #sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 200;
-  }
-  #sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.25); }
-
-  #sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.35);
-    z-index: 150;
-  }
-  #sidebar-overlay.visible { display: block; }
-
-  #menu-toggle { display: flex; flex-direction: column; justify-content: center; }
-
-  #main-panel { width: 100%; }
-
-  #page-content { padding: 14px; }
-
-  .form-grid-2 { grid-template-columns: 1fr; }
-  .form-grid-3 { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .upload-methods { grid-template-columns: 1fr 1fr; }
-
-  .btn { padding: 10px 14px; font-size: 13px; }
-  .btn-row { gap: 6px; }
-}
-
-@media (max-width: 380px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  #page-content { padding: 10px; }
-}
-
-/* ── OFFLINE BANNER ───────────────────────────────────────── */
-
-#offline-banner {
-  display: none;
-  background: var(--amber);
-  color: #fff;
-  font-size: 11px;
-  text-align: center;
-  padding: 5px 12px;
-  font-weight: 500;
-}
-#offline-banner.visible { display: block; }
-
-/* ── INSTALL PROMPT ───────────────────────────────────────── */
-
-#install-prompt {
-  display: none;
-  background: var(--bur);
-  color: #fff;
-  padding: 10px 16px;
-  font-size: 12px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-shrink: 0;
-}
-#install-prompt.visible { display: flex; }
-#install-prompt button { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 5px 12px; border-radius: var(--radius-md); font-size: 11px; cursor: pointer; }
-
-/* ── UPDATE BANNER ────────────────────────────────────────── */
-
-#update-banner {
-  display: none;
-  background: var(--green-l);
-  border-bottom: 0.5px solid var(--green-b);
-  padding: 8px 16px;
-  font-size: 12px;
-  color: var(--green);
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-shrink: 0;
-}
-#update-banner.visible { display: flex; }
-
-/* ── MODAL ────────────────────────────────────────────────── */
-
-.modal-wrap {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 300;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 20px;
-  overflow-y: auto;
-}
-.modal-wrap.open { display: flex; }
-.modal {
-  background: var(--white);
-  border-radius: var(--radius-xl);
-  width: 100%;
-  max-width: 520px;
-  overflow: hidden;
-  margin: auto;
-}
-.modal-header { background: var(--bur); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
-.modal-header h2 { font-size: 14px; font-weight: 500; color: #fff; font-family: Arial, sans-serif; }
-.modal-close { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; }
-.modal-body { padding: 18px; }
-
-/* ── HEARING STEP PROGRESS ────────────────────────────────── */
-
-.step-progress { display: flex; align-items: center; gap: 0; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
-.step-pill { display: flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 0.5px solid var(--lg); background: var(--off-white); color: var(--mg); }
-.step-pill.done { background: var(--green-l); border-color: var(--green-b); color: var(--green); }
-.step-pill.active { background: var(--bur-l); border-color: var(--bur-border); color: var(--bur); }
-.step-arrow { font-size: 10px; color: var(--mg); }
-
-/* ── AI DRAFT BANNER ──────────────────────────────────────── */
-
-.ai-banner { background: var(--bur-l); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--bur); line-height: 1.5; }
-.ai-badge { width: 26px; height: 26px; border-radius: 50%; background: var(--bur); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
-
-/* ── SCROLLBAR ────────────────────────────────────────────── */
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--lg); border-radius: 2px; }
-
-/* ── PRINT ────────────────────────────────────────────────── */
-
-@media print {
-  #sidebar, #topbar, #update-banner, #install-prompt, #offline-banner, .btn-row, .btn { display: none !important; }
-  #main-panel { height: auto; overflow: visible; }
-  #page-content { padding: 0; overflow: visible; }
-  .card { border: 0.5px solid #ccc; page-break-inside: avoid; }
-}
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="description" content="Verdiqt — Disciplinary hearing assistant. Built for chairpersons. Trusted by professionals."/>
+  <meta name="theme-color" content="#6B1E2E"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Verdiqt"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icons/icon-192.png"/>
+  <link rel="stylesheet" href="/src/css/app.css"/>
+  <title>Verdiqt — HR Compliance</title>
+</head>
+<body>
+
+<div id="offline-banner">You are offline — Verdiqt is running from your device. All features available.</div>
+<div id="install-prompt">
+  <span>Install Verdiqt as an app — works offline, no browser needed</span>
+  <div style="display:flex;gap:6px">
+    <button id="install-btn">Install</button>
+    <button id="install-dismiss">Not now</button>
+  </div>
+</div>
+<div id="update-banner">
+  <span id="update-banner-text">Legal content update available</span>
+  <button class="btn btn-green" id="update-install-btn" style="font-size:11px;padding:5px 12px">Install update</button>
+</div>
+
+<div id="sidebar-overlay"></div>
+
+<div id="app-shell">
+
+  <!-- ── SIDEBAR ───────────────────────────────────── -->
+  <nav id="sidebar" role="navigation" aria-label="Main navigation">
+    <div id="sidebar-logo">
+      <div class="logo-name">Verdiqt</div>
+      <div class="logo-tag">Built for chairpersons.<br>Trusted by professionals.</div>
+    </div>
+    <div id="sidebar-nav">
+      <div class="nav-section">Workspace</div>
+      <div class="nav-item active" data-screen="dashboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+        <span class="nav-badge red" id="badge-alerts">0</span>
+      </div>
+      <div class="nav-section">Clients</div>
+      <div class="nav-item" data-screen="clients">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Client vault
+      </div>
+      <div class="nav-item" data-screen="upload">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload document
+      </div>
+      <div class="nav-section">Hearings</div>
+      <div class="nav-item" data-screen="cases">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        All cases
+      </div>
+      <div class="nav-item" data-screen="new-case">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        New case
+      </div>
+      <div class="nav-item" data-screen="charges">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Charge builder
+      </div>
+      <div class="nav-item" data-screen="hearing">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Hearing flow
+      </div>
+      <div class="nav-item" data-screen="decision">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Decision engine
+      </div>
+      <div class="nav-item" data-screen="findings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Findings & sanction
+      </div>
+      <div class="nav-section">Documents</div>
+      <div class="nav-item" data-screen="documents">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Generate & share
+      </div>
+      <div class="nav-section">Tracking</div>
+      <div class="nav-item" data-screen="ccma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        CCMA tracker
+        <span class="nav-badge amber" id="badge-ccma">0</span>
+      </div>
+      <div class="nav-section">Billing</div>
+      <div class="nav-item" data-screen="invoice">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Invoices
+      </div>
+      <div class="nav-section">Settings</div>
+      <div class="nav-item" data-screen="settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </div>
+      <div class="nav-item" data-screen="ai-settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 011 1v3a1 1 0 01-1 1h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 01-1-1v-3a1 1 0 011-1h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/></svg>
+        AI assistant
+      </div>
+    </div>
+    <div id="sidebar-footer">
+      <div id="content-version">v1.0.0 · 2025 Code</div>
+      <div>© 2025 Inreco Consulting</div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN PANEL ─────────────────────────────────── -->
+  <div id="main-panel">
+    <header id="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button id="menu-toggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div id="page-title">Dashboard</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px" id="topbar-actions"></div>
+    </header>
+
+    <main id="page-content" role="main">
+
+      <!-- ══ DASHBOARD ══════════════════════════════════ -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="stats-grid" id="dashboard-stats"></div>
+        <div class="card" id="dashboard-alerts-card" style="display:none">
+          <div class="card-title">Urgent attention required</div>
+          <div id="dashboard-alerts"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Recent cases</div>
+          <table class="data-table">
+            <thead><tr><th>Reference</th><th>Client</th><th>Employee</th><th>Charge</th><th>Status</th></tr></thead>
+            <tbody id="dashboard-cases"></tbody>
+          </table>
+          <div class="btn-row">
+            <button class="btn btn-primary" data-nav="new-case">+ New case</button>
+            <button class="btn" data-nav="cases">View all cases</button>
+          </div>
+        </div>
+        <div class="card" id="dashboard-ccma-card" style="display:none">
+          <div class="card-title">CCMA deadline tracker</div>
+          <div id="dashboard-ccma"></div>
+        </div>
+      </div>
+
+      <!-- ══ CLIENTS ════════════════════════════════════ -->
+      <div class="screen" id="screen-clients">
+        <div class="card">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input type="text" id="client-search" placeholder="Search clients..." style="flex:1;font-size:13px;padding:8px 11px;border:0.5px solid var(--lg);border-radius:var(--radius-md);background:var(--white);color:var(--dg)"/>
+            <button class="btn btn-primary" data-nav="new-client">+ Add client</button>
+          </div>
+          <div id="clients-list"></div>
+        </div>
+      </div>
+
+      <!-- ══ NEW CLIENT ═════════════════════════════════ -->
+      <div class="screen" id="screen-new-client">
+        <div class="card">
+          <div class="card-title">Client details</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Employer / client name *</label><input type="text" id="nc-name" placeholder="ABC Retail (Pty) Ltd"/></div>
+            <div class="field"><label>Registration number</label><input type="text" id="nc-reg" placeholder="2018/123456/07"/></div>
+            <div class="field"><label>Industry / sector</label><input type="text" id="nc-industry" placeholder="Retail"/></div>
+            <div class="field"><label>Number of employees</label>
+              <select id="nc-size">
+                <option value="small">1–10 (small employer)</option>
+                <option value="medium">11–50</option>
+                <option value="large">51–200</option>
+                <option value="enterprise">200+</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="field"><label>Contact person</label><input type="text" id="nc-contact" placeholder="Mr T. Sithole (HR Manager)"/></div>
+            <div class="field"><label>Contact email</label><input type="email" id="nc-email" placeholder="hr@client.co.za"/></div>
+            <div class="field"><label>Contact phone</label><input type="tel" id="nc-phone" placeholder="011 555 0100"/></div>
+            <div class="field"><label>Billing mode</label>
+              <select id="nc-billing">
+                <option value="invoice">Per hearing — generate invoice</option>
+                <option value="org">Employer organisation member — no invoice</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Notes</label><textarea id="nc-notes" placeholder="Disciplinary code in place, union represented employees, key contacts..."></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="save-client-btn">Save client</button>
+            <button class="btn" data-nav="clients">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ UPLOAD ══════════════════════════════════════ -->
+      <div class="screen" id="screen-upload">
+        <div class="notif notif-blue">Documents saved here are linked to the selected client and available in every hearing for that client. Nothing leaves your device unless you choose to share it.</div>
+        <div class="card">
+          <div class="card-title">Step 1 — Select client</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Client *</label><select id="upload-client"></select></div>
+            <div class="field"><label>Document type</label>
+              <select id="upload-type">
+                <option>Disciplinary code</option>
+                <option>Company policy</option>
+                <option>Employment contract</option>
+                <option>Charge sheet</option>
+                <option>Evidence document</option>
+                <option>Signed outcome / letter</option>
+                <option>Photo / site image</option>
+                <option>Medical certificate</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Document description (optional)</label><input type="text" id="upload-desc" placeholder="e.g. Attendance policy updated March 2025"/></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Step 2 — Choose upload method</div>
+          <div class="upload-methods">
+            <div class="upload-method" onclick="triggerFileInput('any')">
+              <div class="upload-method-icon">⬆</div>
+              <div class="upload-method-label">Import file</div>
+              <div class="upload-method-sub">PDF, Word, Excel, image</div>
+            </div>
+            <div class="upload-method" onclick="triggerFileInput('image/*;capture=camera')">
+              <div class="upload-method-icon">⊡</div>
+              <div class="upload-method-label">Scan document</div>
+              <div class="upload-method-sub">Use device camera</div>
+            </div>
+            <div class="upload-method" onclick="triggerFileInput('image/*')">
+              <div class="upload-method-icon">◷</div>
+              <div class="upload-method-label">Take photo</div>
+              <div class="upload-method-sub">Evidence, site images</div>
+            </div>
+            <div class="upload-method" onclick="triggerFileInput('any')">
+              <div class="upload-method-icon">◫</div>
+              <div class="upload-method-label">Browse folder</div>
+              <div class="upload-method-sub">Local or cloud drive</div>
+            </div>
+          </div>
+          <div class="upload-zone" id="upload-dropzone">
+            <div class="upload-zone-title">Drag and drop files here</div>
+            <div class="upload-zone-sub">or click any method above · PDF, Word, JPG, PNG, TIFF · Max 50MB per file</div>
+          </div>
+          <input type="file" id="file-input" style="display:none" multiple accept="*/*"/>
+          <div id="upload-result" style="margin-top:10px"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Recently uploaded</div>
+          <div id="recent-uploads"></div>
+        </div>
+      </div>
+
+      <!-- ══ CASES LIST ══════════════════════════════════ -->
+      <div class="screen" id="screen-cases">
+        <div class="card">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <input type="text" id="case-search" placeholder="Search cases..." style="flex:1;min-width:180px;font-size:13px;padding:8px 11px;border:0.5px solid var(--lg);border-radius:var(--radius-md);background:var(--white);color:var(--dg)"/>
+            <select id="case-filter" style="font-size:13px;padding:8px 11px;border:0.5px solid var(--lg);border-radius:var(--radius-md)">
+              <option value="">All cases</option>
+              <option value="active">In progress</option>
+              <option value="complete">Complete</option>
+              <option value="draft">Draft</option>
+            </select>
+            <button class="btn btn-primary" data-nav="new-case">+ New case</button>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Reference</th><th>Client</th><th>Employee</th><th>Charge</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="cases-list"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ NEW CASE ════════════════════════════════════ -->
+      <div class="screen" id="screen-new-case">
+        <div class="card">
+          <div class="card-title">Employer details</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Client (employer) *</label><select id="case-client"></select></div>
+            <div class="field"><label>Disciplinary code in place?</label>
+              <select id="case-code">
+                <option value="yes">Yes — formal code</option>
+                <option value="no">No — relying on 2025 Code</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Employee details</div>
+          <div class="form-grid-3">
+            <div class="field"><label>Full name *</label><input type="text" id="case-emp-name" placeholder="Jane Dlamini"/></div>
+            <div class="field"><label>ID / employee number</label><input type="text" id="case-emp-id" placeholder="8001015009087"/></div>
+            <div class="field"><label>Position / job title</label><input type="text" id="case-emp-pos" placeholder="Cashier"/></div>
+          </div>
+          <div class="form-grid-2">
+            <div class="field"><label>Length of service</label><input type="text" id="case-emp-service" placeholder="3 years 2 months"/></div>
+            <div class="field"><label>Is employee a shop steward?</label>
+              <select id="case-steward">
+                <option value="no">No</option>
+                <option value="yes">Yes — pre-hearing union consultation required</option>
+              </select>
+            </div>
+            <div class="field"><label>Prior disciplinary record</label>
+              <select id="case-prior">
+                <option value="clean">Clean record</option>
+                <option value="verbal">Verbal warning</option>
+                <option value="written">Written warning</option>
+                <option value="final">Final written warning</option>
+              </select>
+            </div>
+            <div class="field"><label>Sensitive personal data involved?</label>
+              <select id="case-sensitive">
+                <option value="no">No</option>
+                <option value="yes">Yes — race / health / union membership / other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Hearing details</div>
+          <div class="form-grid-3">
+            <div class="field"><label>Case reference</label><input type="text" id="case-ref" placeholder="VQ-2025-001" readonly/></div>
+            <div class="field"><label>Hearing date</label><input type="date" id="case-date"/></div>
+            <div class="field"><label>Hearing time</label><input type="time" id="case-time"/></div>
+            <div class="field"><label>Chairperson name</label><input type="text" id="case-chair" placeholder="Adv. T. Sithole"/></div>
+            <div class="field"><label>Initiator / employer representative</label><input type="text" id="case-initiator" placeholder="HR Manager"/></div>
+            <div class="field"><label>Venue</label><input type="text" id="case-venue" placeholder="Boardroom, Head Office"/></div>
+          </div>
+        </div>
+        <div id="shop-steward-warning" style="display:none" class="notif notif-amber">
+          <strong>Shop steward — pre-hearing consultation required:</strong> Before issuing the notice of hearing, you must consult with the employee's trade union regarding the intention to discipline. Record the date and outcome of this consultation.
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="save-case-btn">Save &amp; proceed to charges →</button>
+          <button class="btn">Save as draft</button>
+        </div>
+      </div>
+
+      <!-- ══ CHARGE BUILDER ══════════════════════════════ -->
+      <div class="screen" id="screen-charges">
+        <div class="notif notif-bur">Select the misconduct category that best describes the alleged conduct. The standard charge wording is a starting point — adapt it precisely to the facts of this case.</div>
+        <div class="card">
+          <div class="card-title">Select misconduct category</div>
+          <div id="charge-categories" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+        </div>
+        <div class="card" id="charge-detail-card" style="display:none">
+          <div class="card-title" id="charge-detail-title">Charge wording</div>
+          <div class="field"><label>Charge</label><textarea id="charge-text" rows="4"></textarea></div>
+          <div class="form-grid-2">
+            <div class="field"><label>Date of incident</label><input type="date" id="charge-date"/></div>
+            <div class="field"><label>Rule / policy breached</label><input type="text" id="charge-rule" placeholder="e.g. Clause 6.3 of Disciplinary Code"/></div>
+          </div>
+          <div class="field"><label>Brief particulars</label><textarea rows="3" id="charge-particulars" placeholder="Describe the specific incident, time, place, and context..."></textarea></div>
+          <div class="notif notif-blue" style="font-size:11px" id="charge-authority"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" data-nav="hearing">Next: Start hearing flow →</button>
+          <button class="btn" id="add-charge-btn">Add another charge</button>
+        </div>
+      </div>
+
+      <!-- ══ HEARING FLOW ════════════════════════════════ -->
+      <div class="screen" id="screen-hearing">
+        <div id="hearing-step-progress" class="step-progress"></div>
+        <div class="card" id="hearing-step-card">
+          <div class="card-title" id="hearing-step-title"></div>
+          <div class="notif notif-blue" id="hearing-step-desc"></div>
+          <div class="checklist" id="hearing-checklist"></div>
+          <div class="card" style="margin-top:12px;background:var(--off-white);border:0.5px solid var(--lg)">
+            <div style="font-size:11px;font-weight:500;color:var(--bur);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Suggested wording</div>
+            <div id="hearing-prompts" style="font-size:12px;color:var(--dg);line-height:1.8"></div>
+          </div>
+          <div class="field" style="margin-top:12px"><label>Chairperson's notes for this stage</label><textarea id="hearing-notes" rows="3" placeholder="Record any unusual circumstances, objections raised, or matters noted..."></textarea></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="hearing-next-btn">Complete stage →</button>
+          <button class="btn" id="hearing-prev-btn">← Previous</button>
+        </div>
+      </div>
+
+      <!-- ══ DECISION ENGINE ════════════════════════════ -->
+      <div class="screen" id="screen-decision">
+        <div class="notif notif-bur">Apply the seven-factor test required by item 9 of the Code of Good Practice: Dismissal (GG 53294, 4 September 2025). Answer each factor based on the evidence heard. Record your reasoning — this becomes the legal foundation of your finding.</div>
+        <div id="decision-factors"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="generate-risk-btn">Generate risk profile →</button>
+        </div>
+        <div id="risk-profile" style="display:none;margin-top:14px"></div>
+      </div>
+
+      <!-- ══ FINDINGS & SANCTION ════════════════════════ -->
+      <div class="screen" id="screen-findings">
+        <div class="card">
+          <div class="card-title">Structured findings</div>
+          <div id="findings-blocks"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Sanction</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Finding on guilt *</label>
+              <select id="finding-guilt">
+                <option value="">Select finding</option>
+                <option value="guilty">Guilty</option>
+                <option value="not_guilty">Not guilty</option>
+              </select>
+            </div>
+            <div class="field"><label>Sanction imposed *</label>
+              <select id="finding-sanction">
+                <option value="">Select sanction</option>
+                <option value="dismissal_notice">Dismissal with notice</option>
+                <option value="dismissal_summary">Summary dismissal (no notice)</option>
+                <option value="final_warning">Final written warning (12 months)</option>
+                <option value="written_warning">Written warning (6 months)</option>
+                <option value="verbal_warning">Verbal warning</option>
+                <option value="demotion">Demotion</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Effective date</label><input type="date" id="finding-date"/></div>
+          <div id="ccma-deadline-notice" style="display:none" class="notif notif-amber"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="save-findings-btn">Save findings &amp; generate documents →</button>
+        </div>
+      </div>
+
+      <!-- ══ DOCUMENTS ══════════════════════════════════ -->
+      <div class="screen" id="screen-documents">
+        <div class="ai-banner">
+          <div class="ai-badge">AI</div>
+          <div><strong>AI document writer — optional.</strong> The AI drafts the full finding report in CCMA award style with case law citations, based on the hearing data. All drafts carry a watermark and require your review and approval before any document is finalised.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Generate documents</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px">
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer" onclick="generateDoc('finding_report')">
+              <div style="font-size:22px;color:var(--bur);margin-bottom:6px">⬇</div>
+              <div style="font-size:13px;font-weight:500">Finding report</div>
+              <div style="font-size:11px;color:var(--mg);margin-top:3px">Full structured outcome</div>
+              <div style="display:flex;gap:5px;justify-content:center;margin-top:8px">
+                <span class="pill pill-bur">PDF</span>
+                <span class="pill pill-bur">Word</span>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer" onclick="generateDoc('outcome_letter')">
+              <div style="font-size:22px;color:var(--bur);margin-bottom:6px">✉</div>
+              <div style="font-size:13px;font-weight:500">Outcome letter</div>
+              <div style="font-size:11px;color:var(--mg);margin-top:3px">For employee delivery</div>
+              <div style="display:flex;gap:5px;justify-content:center;margin-top:8px">
+                <span class="pill pill-bur">PDF</span>
+                <span class="pill pill-bur">Word</span>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer" onclick="generateDoc('disciplinary_record')">
+              <div style="font-size:22px;color:var(--bur);margin-bottom:6px">◫</div>
+              <div style="font-size:13px;font-weight:500">Disciplinary record</div>
+              <div style="font-size:11px;color:var(--mg);margin-top:3px">HR file document</div>
+              <div style="display:flex;gap:5px;justify-content:center;margin-top:8px">
+                <span class="pill pill-bur">PDF</span>
+                <span class="pill pill-bur">Word</span>
+              </div>
+            </div>
+          </div>
+          <div id="doc-draft-preview" style="display:none">
+            <div class="doc-preview watermark" id="doc-preview-content"></div>
+            <div class="approval-gate" style="margin-top:14px">
+              <div class="approval-gate-title">Chairperson approval gate</div>
+              <div style="font-size:12px;color:var(--bur);margin-bottom:12px;line-height:1.6">Confirm each item before approving. This constitutes your professional attestation that the document reflects your independent findings — not simply the AI output.</div>
+              <div class="checklist" id="approval-checklist"></div>
+              <div class="form-grid-2" style="margin-top:12px">
+                <div class="field"><label>Chairperson full name *</label><input type="text" id="approval-name" placeholder="Enter your full name to confirm approval"/></div>
+                <div class="field"><label>Designation *</label><input type="text" id="approval-designation" placeholder="Independent labour consultant / HR Manager"/></div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-green" id="approve-doc-btn">Approve &amp; lock document ✓</button>
+                <button class="btn" onclick="document.getElementById('doc-draft-preview').style.display='none'">Return to edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" id="share-card" style="display:none">
+          <div class="card-title">Save &amp; share</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:14px">
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer;padding:14px" onclick="shareDoc('device')">
+              <div style="font-size:18px;margin-bottom:5px;color:var(--bur)">💾</div>
+              <div style="font-size:11px;font-weight:500">Save to device</div>
+            </div>
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer;padding:14px" onclick="shareDoc('drive')">
+              <div style="font-size:18px;margin-bottom:5px;color:var(--bur)">△</div>
+              <div style="font-size:11px;font-weight:500">Google Drive</div>
+            </div>
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer;padding:14px" onclick="shareDoc('email')">
+              <div style="font-size:18px;margin-bottom:5px;color:var(--bur)">✉</div>
+              <div style="font-size:11px;font-weight:500">Email</div>
+            </div>
+            <div class="card" style="margin-bottom:0;text-align:center;cursor:pointer;padding:14px" onclick="shareDoc('whatsapp')">
+              <div style="font-size:18px;margin-bottom:5px;color:var(--bur)">W</div>
+              <div style="font-size:11px;font-weight:500">WhatsApp</div>
+            </div>
+          </div>
+          <div class="notif notif-blue" style="font-size:11px">All documents are saved to your device only. Verdiqt never stores, transmits, or accesses your case files.</div>
+        </div>
+      </div>
+
+      <!-- ══ CCMA TRACKER ═══════════════════════════════ -->
+      <div class="screen" id="screen-ccma">
+        <div class="notif notif-amber">30-day CCMA referral countdown starts automatically on dismissal. Amber alert from day 20. Red alert from day 28. Dismissal referral form: LRA Form 7.11 · CCMA: 0861 16 2262 · www.ccma.org.za</div>
+        <div class="stats-grid" id="ccma-stats"></div>
+        <div id="ccma-active-list"></div>
+        <div class="card" id="ccma-closed-card">
+          <div class="card-title">Closed — window expired or referral received</div>
+          <div id="ccma-closed-list"></div>
+        </div>
+      </div>
+
+      <!-- ══ INVOICE ════════════════════════════════════ -->
+      <div class="screen" id="screen-invoice">
+        <div class="notif notif-bur" id="invoice-mode-notice"></div>
+        <div class="card" id="invoice-form-card">
+          <div class="card-title">Generate invoice</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Client</label><select id="inv-client"></select></div>
+            <div class="field"><label>Case reference</label><select id="inv-case"></select></div>
+            <div class="field"><label>Invoice date</label><input type="date" id="inv-date"/></div>
+            <div class="field"><label>Payment due</label>
+              <select id="inv-terms">
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30" selected>30 days</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-title" style="margin-top:8px">Line items</div>
+          <table class="invoice-table">
+            <thead><tr><th style="width:50%">Description</th><th style="width:15%">Qty</th><th style="width:17%">Rate (R)</th><th style="width:18%">Amount (R)</th></tr></thead>
+            <tbody id="invoice-items">
+              <tr>
+                <td><input type="text" value="Disciplinary hearing — chairperson fee" style="width:100%;border:none;background:transparent;font-size:12px;color:var(--dg)"/></td>
+                <td><input type="number" value="1" min="0" style="width:50px;font-size:12px;border:0.5px solid var(--lg);border-radius:4px;padding:3px 5px" oninput="calcInvoice()"/></td>
+                <td><input type="number" id="rate-hearing" value="3500" style="width:70px;font-size:12px;border:0.5px solid var(--lg);border-radius:4px;padding:3px 5px" oninput="calcInvoice()"/></td>
+                <td class="line-total" style="font-weight:500">R 3 500</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Finding report — drafting and finalisation" style="width:100%;border:none;background:transparent;font-size:12px;color:var(--dg)"/></td>
+                <td><input type="number" value="1" min="0" style="width:50px;font-size:12px;border:0.5px solid var(--lg);border-radius:4px;padding:3px 5px" oninput="calcInvoice()"/></td>
+                <td><input type="number" id="rate-report" value="1500" style="width:70px;font-size:12px;border:0.5px solid var(--lg);border-radius:4px;padding:3px 5px" oninput="calcInvoice()"/></td>
+                <td class="line-total" style="font-weight:500">R 1 500</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px">
+            <div class="invoice-total-box">
+              <div style="font-size:11px;color:var(--bur);font-weight:500">Total due</div>
+              <div style="font-size:22px;font-weight:500;color:var(--bur)" id="invoice-total">R 5 000.00</div>
+              <div style="font-size:10px;color:var(--mg);margin-top:2px">No VAT — not VAT registered</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="generateInvoice()">Generate PDF invoice</button>
+            <button class="btn btn-green" onclick="emailInvoice()">Email to client</button>
+            <button class="btn btn-amber" onclick="whatsappInvoice()">WhatsApp to client</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ════════════════════════════════════ -->
+      <div class="screen" id="screen-settings">
+        <div class="card">
+          <div class="card-title">Your practice details</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Practice / trading name</label><input type="text" id="s-practice" placeholder="Inreco Consulting"/></div>
+            <div class="field"><label>Your full name</label><input type="text" id="s-name" placeholder="Your name"/></div>
+            <div class="field"><label>Email</label><input type="email" id="s-email" placeholder="you@inreco.co.za"/></div>
+            <div class="field"><label>Phone / WhatsApp</label><input type="tel" id="s-phone" placeholder="082 555 0100"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Banking details (appear on invoices)</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Bank</label><input type="text" id="s-bank" placeholder="FNB"/></div>
+            <div class="field"><label>Account number</label><input type="text" id="s-acc" placeholder="62012345678"/></div>
+            <div class="field"><label>Branch code</label><input type="text" id="s-branch" placeholder="250655"/></div>
+            <div class="field"><label>Account type</label><select id="s-acctype"><option>Cheque / current</option><option>Savings</option></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Rate card</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Hearing fee — half day (R)</label><input type="number" id="s-rate-half" value="3500"/></div>
+            <div class="field"><label>Hearing fee — full day (R)</label><input type="number" id="s-rate-full" value="5500"/></div>
+            <div class="field"><label>Finding report (R)</label><input type="number" id="s-rate-report" value="1500"/></div>
+            <div class="field"><label>Outcome letter only (R)</label><input type="number" id="s-rate-letter" value="650"/></div>
+            <div class="field"><label>Travel (R per km)</label><input type="number" id="s-rate-travel" value="4.50" step="0.01"/></div>
+            <div class="field"><label>Consultation (R per hour)</label><input type="number" id="s-rate-consult" value="850"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Billing mode</div>
+          <div class="field"><label>Default billing mode</label>
+            <select id="s-billing-mode">
+              <option value="invoice">Independent consultant — generate invoices</option>
+              <option value="org">Employer organisation — no invoices</option>
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Licence &amp; LiveUpdate</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Licence key</label><input type="text" id="s-licence" placeholder="VDQ-XXXX-XXXX-XXXX"/></div>
+            <div class="field"><label>Subscription status</label><input type="text" id="s-sub-status" readonly value="Checking..."/></div>
+          </div>
+          <div class="field"><label>Legal content version</label><input type="text" id="s-content-ver" readonly/></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Data management</div>
+          <div class="notif notif-bur" style="margin-bottom:10px">All your data is stored locally on this device only. Verdiqt never accesses or stores your data.</div>
+          <div class="btn-row">
+            <button class="btn" id="backup-btn">Export full backup</button>
+            <button class="btn" id="restore-btn">Restore from backup</button>
+            <input type="file" id="restore-input" style="display:none" accept=".json"/>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="save-settings-btn">Save settings</button>
+        </div>
+      </div>
+
+      <!-- ══ AI SETTINGS ════════════════════════════════ -->
+      <div class="screen" id="screen-ai-settings">
+        <div class="notif notif-amber">AI features send case data to third-party providers (Anthropic / OpenAI). This may constitute a cross-border transfer of personal information under POPIA. You, as the responsible party, are responsible for ensuring this is lawful. Consider anonymising personal identifiers before use.</div>
+        <div class="card">
+          <div class="card-title">AI assistant settings</div>
+          <div class="form-grid-2">
+            <div class="field"><label>Provider</label>
+              <select id="ai-provider">
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="openai">OpenAI (GPT-4)</option>
+              </select>
+            </div>
+            <div class="field"><label>API key (stored locally only)</label><input type="password" id="ai-key" placeholder="sk-ant-... or sk-..."/></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="save-ai-btn">Save AI settings</button>
+            <button class="btn" id="test-ai-btn">Test connection</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Available AI features</div>
+          <div class="checklist">
+            <div class="check-item" style="cursor:default">Draft full finding report in CCMA award style with case law citations</div>
+            <div class="check-item" style="cursor:default">Generate cross-examination questions for current charge</div>
+            <div class="check-item" style="cursor:default">Identify procedural risks and gaps</div>
+            <div class="check-item" style="cursor:default">Suggest sanction range based on comparable CCMA cases</div>
+          </div>
+          <div class="notif notif-bur" style="margin-top:10px">All AI-generated content is watermarked as a draft and must be reviewed, edited, and approved by the chairperson before use. Verdiqt does not make automated decisions.</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Hidden file input for restore -->
+<input type="file" id="restore-input-global" style="display:none" accept=".json"/>
+
+<script type="module" src="/src/js/app.js"></script>
+</body>
+</html>
