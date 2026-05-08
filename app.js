@@ -87,7 +87,7 @@ async function loadContent() {
 // ── SERVICE WORKER ─────────────────────────────────────────────
 function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('/sw.js').then(reg => {
+  navigator.serviceWorker.register('/verdiqt/sw.js').then(reg => {
     reg.addEventListener('updatefound', () => {
       const w = reg.installing;
       w.addEventListener('statechange', () => {
