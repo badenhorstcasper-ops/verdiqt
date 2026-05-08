@@ -1,5 +1,5 @@
 // Service worker v3 - minimal caching to allow auth redirects
-const CACHE = 'verdiqt-v3';
+const CACHE = 'verdiqt-v9';
 const CONTENT_URL = 'https://raw.githubusercontent.com/badenhorstcasper-ops/verdiqt-content/main/verdiqt-content.json';
 
 self.addEventListener('install', e => {
