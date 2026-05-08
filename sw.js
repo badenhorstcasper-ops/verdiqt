@@ -1,4 +1,4 @@
-const CACHE = 'verdiqt-v1';
+const CACHE = 'verdiqt-v2';
 const CONTENT_URL = 'https://raw.githubusercontent.com/badenhorstcasper-ops/verdiqt-content/main/verdiqt-content.json';
 
 const SHELL = [
