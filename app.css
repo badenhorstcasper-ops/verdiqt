@@ -286,7 +286,7 @@ body {
 .pill-active { background: var(--green-l); color: var(--green); border: 0.5px solid var(--green-b); }
 .pill-amber { background: var(--amber-l); color: var(--amber); border: 0.5px solid var(--amber-b); }
 .pill-red { background: var(--red-l); color: var(--red); border: 0.5px solid var(--red-b); }
-.pill-bur { background: var(--bur-l); color: var(--bur); border: 0.5px solid var(--bur-border); }
+.pill-bur { background: var(--bur); color: #ffffff; border: 0.5px solid var(--bur-border); }
 .pill-grey { background: var(--off-white); color: var(--mg); border: 0.5px solid var(--lg); }
 .pill-blue { background: var(--blue-l); color: var(--blue); border: 0.5px solid var(--blue-b); }
 
@@ -297,7 +297,7 @@ body {
 .notif-amber { background: var(--amber-l); border: 0.5px solid var(--amber-b); color: var(--amber); }
 .notif-red { background: var(--red-l); border: 0.5px solid var(--red-b); color: var(--red); }
 .notif-blue { background: var(--blue-l); border: 0.5px solid var(--blue-b); color: var(--blue); }
-.notif-bur { background: var(--bur-l); border: 0.5px solid var(--bur-border); color: var(--bur); }
+.notif-bur { background: var(--bur); border: 0.5px solid var(--bur-border); color: #ffffff; }
 
 /* ── TABLES ───────────────────────────────────────────────── */
 
@@ -548,7 +548,7 @@ body {
 
 /* ── AI DRAFT BANNER ──────────────────────────────────────── */
 
-.ai-banner { background: var(--bur-l); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--bur); line-height: 1.5; }
+.ai-banner { background: var(--bur); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #ffffff; line-height: 1.5; }
 .ai-badge { width: 26px; height: 26px; border-radius: 50%; background: var(--bur); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
 
 /* ── SCROLLBAR ────────────────────────────────────────────── */
