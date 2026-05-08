@@ -141,7 +141,7 @@ function hideUpdateBanner() {
 
 // ── ROUTER ────────────────────────────────────────────────────
 const SCREENS = {
-  dashboard: renderDashboard,
+  dashboard: () => { renderDashboard(); },
   clients: renderClients,
   'new-client': renderNewClient,
   upload: renderUpload,
