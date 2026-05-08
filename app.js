@@ -1098,7 +1098,7 @@ async function restoreData(e) {
 
 // ── AI SETTINGS ────────────────────────────────────────────────
 async function renderAISettings() {
-  const el = document.getElementById('page-content');
+  const el = document.getElementById('screen-ai-settings');
   const sub = userSubscription;
   const active = hasAIAccess();
   const planName = sub ? (sub.ai_unlimited ? 'LiveUpdate Subscription' : `Standard — ${sub.ai_credits} AI credits remaining`) : 'Basic (No AI)';
@@ -1106,7 +1106,7 @@ async function renderAISettings() {
   const statusText = active ? 'Active' : 'Inactive';
 
   el.innerHTML = `
-    <div class="screen active" id="screen-ai-settings">
+    <div>
       <div class="card" style="margin-bottom:16px">
         <div class="card-title">AI Document Generation</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
