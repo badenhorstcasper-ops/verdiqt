@@ -1,13 +1,60 @@
 import { put, get, getAll, remove, getSetting, setSetting, uid, exportAllData, importData } from './db.js';
 
 const CONTENT_URL = 'https://raw.githubusercontent.com/badenhorstcasper-ops/verdiqt-content/main/verdiqt-content.json';
+const SUPABASE_URL = 'https://umxffjfhmgikbhlqvacl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGZmamZobWdpa2JobHF2YWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMjc5OTIsImV4cCI6MjA5MzgwMzk5Mn0.Gwxw4d52f_RRowtFcvvbU-Xea2Qaa6sFdyQ1hx0iBUk';
+const AI_KEY = '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';
+let currentUser = null;
+let userSubscription = null;
 let CONTENT = null;
 let currentCase = null;
 let currentStep = 0;
 let deferredInstall = null;
 
 // ── BOOT ──────────────────────────────────────────────────────
+// ── SUPABASE AUTH ─────────────────────────────────────────────
+async function supabaseGet(path, token) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return res.json();
+}
+
+async function loadSession() {
+  const raw = localStorage.getItem('verdiqt_session');
+  if (!raw) { window.location.href = '/auth.html'; return false; }
+  try {
+    const session = JSON.parse(raw);
+    if (!session.access_token) { window.location.href = '/auth.html'; return false; }
+    currentUser = session.user;
+    // Load subscription
+    const subs = await supabaseGet(
+      `subscriptions?user_id=eq.${currentUser.id}&order=created_at.desc&limit=1`,
+      session.access_token
+    );
+    userSubscription = Array.isArray(subs) && subs.length ? subs[0] : null;
+    return true;
+  } catch(e) {
+    localStorage.removeItem('verdiqt_session');
+    window.location.href = '/auth.html';
+    return false;
+  }
+}
+
+function hasAIAccess() {
+  if (!userSubscription) return false;
+  if (userSubscription.ai_unlimited && userSubscription.status === 'active') return true;
+  if (userSubscription.ai_credits > 0) return true;
+  return false;
+}
+
 async function boot() {
+  const ok = await loadSession();
+  if (!ok) return;
   await loadContent();
   registerSW();
   setupRouter();
@@ -763,13 +810,12 @@ async function renderDocuments() {
 
 window.generateDoc = async function(type) {
   if (!currentCase) { showToast('Load or create a case first', 'error'); return; }
-  const aiKey = await getSetting('ai_key');
-  const aiProvider = await getSetting('ai_provider') || 'anthropic';
-  if (aiKey) {
+  if (hasAIAccess()) {
     showToast('Generating AI draft...');
-    await generateAIDraft(type, aiKey, aiProvider);
+    await generateAIDraft(type, AI_KEY, 'anthropic');
   } else {
     buildTemplateDraft(type);
+    showToast('Template draft generated. Upgrade to LiveUpdate for full AI documents.', 'info');
   }
   document.getElementById('doc-draft-preview').style.display = 'block';
   document.getElementById('doc-draft-preview').scrollIntoView({ behavior: 'smooth' });
@@ -780,7 +826,7 @@ async function generateAIDraft(type, apiKey, provider) {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2000,
@@ -1048,32 +1094,52 @@ async function restoreData(e) {
 
 // ── AI SETTINGS ────────────────────────────────────────────────
 async function renderAISettings() {
-  const key = await getSetting('ai_key');
-  const provider = await getSetting('ai_provider');
-  if (key) document.getElementById('ai-key').value = key;
-  if (provider) document.getElementById('ai-provider').value = provider;
+  const el = document.getElementById('page-content');
+  const sub = userSubscription;
+  const active = hasAIAccess();
+  const planName = sub ? (sub.ai_unlimited ? 'LiveUpdate Subscription' : `Standard — ${sub.ai_credits} AI credits remaining`) : 'Basic (No AI)';
+  const statusColor = active ? '#6bffb8' : '#ff9999';
+  const statusText = active ? 'Active' : 'Inactive';
 
-  document.getElementById('save-ai-btn').onclick = async () => {
-    await setSetting('ai_key', document.getElementById('ai-key').value.trim());
-    await setSetting('ai_provider', document.getElementById('ai-provider').value);
-    showToast('AI settings saved');
-  };
-
-  document.getElementById('test-ai-btn').onclick = async () => {
-    const k = document.getElementById('ai-key').value.trim();
-    if (!k) { showToast('Enter an API key first', 'error'); return; }
-    showToast('Testing connection...');
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': k, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 10, messages: [{ role: 'user', content: 'Hello' }] })
-      });
-      if (res.ok) showToast('AI connection successful');
-      else showToast('Connection failed — check your API key', 'error');
-    } catch { showToast('Connection failed — check your internet connection', 'error'); }
-  };
+  el.innerHTML = `
+    <div class="screen active" id="screen-ai-settings">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">AI Document Generation</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="width:10px;height:10px;border-radius:50%;background:${statusColor};flex-shrink:0"></div>
+          <div>
+            <div style="font-weight:500">${planName}</div>
+            <div style="font-size:12px;color:var(--text-muted)">AI Status: ${statusText}</div>
+          </div>
+        </div>
+        ${active ? `
+          <div style="background:rgba(107,255,184,0.08);border:1px solid rgba(107,255,184,0.2);border-radius:4px;padding:12px;font-size:13px;color:#99ffd6">
+            ✓ AI document generation is active on your account. Full CCMA award-style documents are available in Generate & Share.
+          </div>
+        ` : `
+          <div style="background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2);border-radius:4px;padding:12px;font-size:13px;color:#ff9999;margin-bottom:16px">
+            AI document generation requires a LiveUpdate subscription. You can still generate template documents.
+          </div>
+          <a href="/pricing.html" class="btn btn-primary" style="display:block;text-align:center;padding:12px;text-decoration:none">
+            Upgrade to LiveUpdate — R299/month
+          </a>
+        `}
+      </div>
+      <div class="card">
+        <div class="card-title">Account</div>
+        <div class="field-row"><span class="field-label">Email</span><span>${currentUser?.email || '—'}</span></div>
+        <div style="margin-top:16px">
+          <button class="btn" onclick="doSignOut()">Sign out</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
+
+window.doSignOut = function() {
+  localStorage.removeItem('verdiqt_session');
+  window.location.href = '/auth.html';
+};
 
 // ── HELPERS ────────────────────────────────────────────────────
 async function populateClientSelect(id) {
