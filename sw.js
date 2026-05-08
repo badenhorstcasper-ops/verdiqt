@@ -5,22 +5,10 @@ const SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/src/css/app.css',
-  '/src/js/app.js',
-  '/src/js/db.js',
-  '/src/js/router.js',
-  '/src/js/modules/cases.js',
-  '/src/js/modules/clients.js',
-  '/src/js/modules/charges.js',
-  '/src/js/modules/hearing.js',
-  '/src/js/modules/decision.js',
-  '/src/js/modules/findings.js',
-  '/src/js/modules/documents.js',
-  '/src/js/modules/ccma.js',
-  '/src/js/modules/invoice.js',
-  '/src/js/modules/ai.js',
-  '/src/js/modules/settings.js',
-  '/src/js/content.js',
+  '/app.css',
+  '/app.js',
+  '/db.js',
+  '/verdiqt-content.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
 ];
@@ -72,9 +60,9 @@ async function checkForUpdate(client) {
     const res = await fetch(CONTENT_URL + '?t=' + Date.now());
     const remote = await res.json();
     const cache = await caches.open(CACHE);
-    const cached = await cache.match('/src/js/content.js');
-    const local = cached ? await cached.text() : '';
-    const localVersion = (local.match(/"version":"([^"]+)"/) || [])[1] || '0.0.0';
+    const cached = await cache.match('/verdiqt-content.json');
+    const local = cached ? await cached.json() : { version: '0.0.0' };
+    const localVersion = local.version || '0.0.0';
     client.postMessage({ type: 'UPDATE_STATUS', hasUpdate: remote.version !== localVersion, remote });
   } catch {
     client.postMessage({ type: 'UPDATE_STATUS', hasUpdate: false });
@@ -86,8 +74,7 @@ async function installUpdate(client) {
     const res = await fetch(CONTENT_URL + '?t=' + Date.now());
     const json = await res.json();
     const cache = await caches.open(CACHE);
-    const blob = new Blob([`export const CONTENT = ${JSON.stringify(json)};`], { type: 'application/javascript' });
-    await cache.put('/src/js/content.js', new Response(blob));
+    await cache.put('/verdiqt-content.json', new Response(JSON.stringify(json), { headers: { 'Content-Type': 'application/json' } }));
     client.postMessage({ type: 'UPDATE_COMPLETE', version: json.version });
   } catch (err) {
     client.postMessage({ type: 'UPDATE_ERROR', error: err.message });
