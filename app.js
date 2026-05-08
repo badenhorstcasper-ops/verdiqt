@@ -55,7 +55,7 @@ async function boot() {
   const ok = await loadSession();
   if (!ok) return;
   await loadContent();
-  registerSW();
+  
   setupRouter();
   setupSidebar();
   setupOfflineDetection();
