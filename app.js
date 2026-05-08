@@ -25,10 +25,10 @@ async function supabaseGet(path, token) {
 
 async function loadSession() {
   const raw = localStorage.getItem('verdiqt_session');
-  if (!raw) { window.location.href = '/verdiqt/auth.html'; return false; }
+  if (!raw) { window.location.href = '/auth.html'; return false; }
   try {
     const session = JSON.parse(raw);
-    if (!session.access_token) { window.location.href = '/verdiqt/auth.html'; return false; }
+    if (!session.access_token) { window.location.href = '/auth.html'; return false; }
     currentUser = session.user;
     // Load subscription
     const subs = await supabaseGet(
@@ -39,7 +39,7 @@ async function loadSession() {
     return true;
   } catch(e) {
     localStorage.removeItem('verdiqt_session');
-    window.location.href = '/verdiqt/auth.html';
+    window.location.href = '/auth.html';
     return false;
   }
 }
@@ -55,7 +55,7 @@ async function boot() {
   const ok = await loadSession();
   if (!ok) return;
   await loadContent();
-  
+  registerSW();
   setupRouter();
   setupSidebar();
   setupOfflineDetection();
@@ -87,7 +87,7 @@ async function loadContent() {
 // ── SERVICE WORKER ─────────────────────────────────────────────
 function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('/verdiqt/sw.js').then(reg => {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
     reg.addEventListener('updatefound', () => {
       const w = reg.installing;
       w.addEventListener('statechange', () => {
@@ -1142,7 +1142,7 @@ async function renderAISettings() {
 
 window.doSignOut = function() {
   localStorage.removeItem('verdiqt_session');
-  window.location.href = '/verdiqt/auth.html';
+  window.location.href = '/auth.html';
 };
 
 // ── HELPERS ────────────────────────────────────────────────────

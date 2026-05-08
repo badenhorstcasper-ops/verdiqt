@@ -442,7 +442,7 @@
     if (res.access_token) {
       localStorage.setItem('verdiqt_session', JSON.stringify(res));
       showMsg('Signed in — loading your workspace...', 'success');
-      setTimeout(() => { window.location.href = '/verdiqt/index.html'; }, 1000);
+      setTimeout(() => { window.location.href = '/index.html'; }, 1000);
     } else {
       showMsg(res.error_description || 'Incorrect email or password. Please try again.');
     }
@@ -491,7 +491,7 @@
   if (session) {
     try {
       const s = JSON.parse(session);
-      if (s.access_token) window.location.href = '/verdiqt/index.html';
+      if (s.access_token) window.location.href = '/index.html';
     } catch(e) { localStorage.removeItem('verdiqt_session'); }
   }
 </script>
