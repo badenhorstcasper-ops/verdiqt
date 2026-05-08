@@ -3,7 +3,6 @@ import { put, get, getAll, remove, getSetting, setSetting, uid, exportAllData, i
 const CONTENT_URL = 'https://raw.githubusercontent.com/badenhorstcasper-ops/verdiqt-content/main/verdiqt-content.json';
 const SUPABASE_URL = 'https://umxffjfhmgikbhlqvacl.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGZmamZobWdpa2JobHF2YWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMjc5OTIsImV4cCI6MjA5MzgwMzk5Mn0.Gwxw4d52f_RRowtFcvvbU-Xea2Qaa6sFdyQ1hx0iBUk';
-const AI_KEY = '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';
 let currentUser = null;
 let userSubscription = null;
 let CONTENT = null;
@@ -812,7 +811,7 @@ window.generateDoc = async function(type) {
   if (!currentCase) { showToast('Load or create a case first', 'error'); return; }
   if (hasAIAccess()) {
     showToast('Generating AI draft...');
-    await generateAIDraft(type, AI_KEY, 'anthropic');
+    await generateAIDraft(type);
   } else {
     buildTemplateDraft(type);
     showToast('Template draft generated. Upgrade to LiveUpdate for full AI documents.', 'info');
@@ -821,20 +820,25 @@ window.generateDoc = async function(type) {
   document.getElementById('doc-draft-preview').scrollIntoView({ behavior: 'smooth' });
 };
 
-async function generateAIDraft(type, apiKey, provider) {
+async function generateAIDraft(type) {
   const prompt = buildAIPrompt(type);
+  const session = JSON.parse(localStorage.getItem('verdiqt_session') || '{}');
+  const token = session.access_token || '';
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/generate-document`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_ANON
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: `You are a South African labour law expert writing disciplinary hearing documents in CCMA award style. Always cite relevant South African case law. Calibrate to the Code of Good Practice: Dismissal (GG 53294, 4 September 2025). Write in formal legal English. Structure clearly with headings.`,
-        messages: [{ role: 'user', content: prompt }]
+        prompt,
+        systemPrompt: `You are a South African labour law expert writing disciplinary hearing documents in CCMA award style. Always cite relevant South African case law. Calibrate to the Code of Good Practice: Dismissal (GG 53294, 4 September 2025). Write in formal legal English. Structure clearly with headings.`
       })
     });
     const data = await res.json();
+    if (data.error) throw new Error(data.error);
     const text = data.content?.[0]?.text || '';
     document.getElementById('doc-preview-content').innerHTML = buildDocPreviewHTML(text, true);
     document.getElementById('doc-preview-content').classList.add('watermark');
