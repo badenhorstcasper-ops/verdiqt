@@ -141,7 +141,7 @@ function hideUpdateBanner() {
 
 // ── ROUTER ────────────────────────────────────────────────────
 const SCREENS = {
-  dashboard: () => { renderDashboard(); },
+  dashboard: renderDashboard,
   clients: renderClients,
   'new-client': renderNewClient,
   upload: renderUpload,
@@ -174,7 +174,7 @@ function setupRouter() {
   });
 }
 
-function navigate(screen) {
+async function navigate(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
@@ -192,7 +192,7 @@ function navigate(screen) {
   };
   document.getElementById('page-title').textContent = titles[screen] || screen;
 
-  if (SCREENS[screen]) SCREENS[screen]();
+  if (SCREENS[screen]) await SCREENS[screen]();
 
   if (window.innerWidth <= 680) closeSidebar();
   document.getElementById('page-content').scrollTo(0, 0);
