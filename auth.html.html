@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>VERDIQT — Sign In</title>
+  <link rel="icon" href="/icons/icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --burgundy-deep:  #1a0008;
+      --burgundy-dark:  #2d0010;
+      --burgundy-mid:   #4a0018;
+      --burgundy-main:  #6B1E2E;
+      --burgundy-light: #8a2a3e;
+      --gold:           #C9A84C;
+      --gold-light:     #e8c97a;
+      --white:          #ffffff;
+      --white-80:       rgba(255,255,255,0.80);
+      --white-50:       rgba(255,255,255,0.85);
+      --white-20:       rgba(255,255,255,0.70);
+      --white-10:       rgba(255,255,255,0.15);
+      --white-06:       rgba(255,255,255,0.10);
+      --error:          #ff6b6b;
+      --success:        #6bffb8;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Raleway', sans-serif;
+      background: var(--burgundy-deep);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(106,30,46,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(74,0,24,0.7) 0%, transparent 60%),
+        linear-gradient(160deg, #1a0008 0%, #2d0010 40%, #1a0008 100%);
+    }
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px);
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(26, 0, 8, 0.7);
+      border: 1px solid var(--white-10);
+      border-radius: 4px;
+      padding: 48px 40px 40px;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.08),
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 120px rgba(106,30,46,0.15);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LOGO ── */
+    .logo-wrap {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .logo-wrap img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 24px rgba(201,168,76,0.25));
+    }
+    .logo-fallback {
+      display: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(201,168,76,0.4);
+    }
+
+    /* ── DIVIDER ── */
+    .gold-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 28px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--white-10);
+      margin-bottom: 28px;
+      gap: 0;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.70);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+    .tab:hover:not(.active) { color: var(--white); }
+
+    /* ── FORM ── */
+    .form { display: none; }
+    .form.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 8px;
+    }
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--white-06);
+      border: 1px solid var(--white-10);
+      border-radius: 3px;
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.45); }
+    .field input:focus {
+      border-color: rgba(201,168,76,0.5);
+      background: var(--white-10);
+    }
+
+    /* ── BUTTON ── */
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background: var(--burgundy-main);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 3px;
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover {
+      background: var(--burgundy-light);
+      border-color: rgba(201,168,76,0.6);
+    }
+    .btn-primary:active { transform: scale(0.99); }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── MESSAGES ── */
+    .msg {
+      display: none;
+      padding: 11px 14px;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .msg.error {
+      display: block;
+      background: rgba(255,107,107,0.12);
+      border: 1px solid rgba(255,107,107,0.3);
+      color: #ff9999;
+    }
+    .msg.success {
+      display: block;
+      background: rgba(107,255,184,0.10);
+      border: 1px solid rgba(107,255,184,0.25);
+      color: #99ffd6;
+    }
+
+    /* ── FORGOT / LINKS ── */
+    .forgot {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 18px;
+    }
+    .forgot a, .switch-link a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .forgot a:hover, .switch-link a:hover { color: var(--gold-light); }
+
+    /* ── FOOTER ── */
+    .card-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--white-06);
+      text-align: center;
+    }
+    .powered {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.70);
+    }
+    .powered span { color: rgba(255,255,255,0.90); }
+
+    /* ── LOADING SPINNER ── */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESET PANEL ── */
+    #reset-panel {
+      display: none;
+    }
+    #reset-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="page">
+  <div class="card">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <img src="/icons/verdiqt-logo.png" alt="VERDIQT"
+           onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='block'"/>
+      <div class="logo-fallback">VERDIQT</div>
+    </div>
+    <div class="gold-line"></div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="auth-tabs">
+      <button class="tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="tab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="msg" id="msg"></div>
+
+    <!-- LOGIN FORM -->
+    <div class="form active" id="form-login">
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div class="forgot">
+        <a onclick="showReset()">Forgot password?</a>
+      </div>
+      <button class="btn-primary" id="btn-login" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div class="form" id="form-signup">
+      <div class="field">
+        <label>Full name</label>
+        <input type="text" id="signup-name" placeholder="Your full name" autocomplete="name"/>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="Minimum 8 characters" autocomplete="new-password"/>
+      </div>
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" id="signup-confirm" placeholder="Repeat password" autocomplete="new-password"/>
+      </div>
+      <button class="btn-primary" id="btn-signup" onclick="doSignup()">Create Account</button>
+    </div>
+
+    <!-- RESET PASSWORD PANEL -->
+    <div id="reset-panel">
+      <div class="field">
+        <label>Enter your email address</label>
+        <input type="email" id="reset-email" placeholder="you@example.com"/>
+      </div>
+      <button class="btn-primary" id="btn-reset" onclick="doReset()">Send Reset Link</button>
+      <div style="text-align:center; margin-top:16px;">
+        <a onclick="hideReset()" style="font-size:12px; color:rgba(255,255,255,0.75); cursor:pointer; text-decoration:none;">← Back to sign in</a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <div class="powered">Powered by <span>iNRECO</span> Consulting</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://umxffjfhmgikbhlqvacl.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVteGZmamZobWdpa2JobHF2YWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMjc5OTIsImV4cCI6MjA5MzgwMzk5Mn0.Gwxw4d52f_RRowtFcvvbU-Xea2Qaa6sFdyQ1hx0iBUk';
+
+  const api = (path, body) => fetch(`${SUPABASE_URL}/auth/v1/${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON
+    },
+    body: JSON.stringify(body)
+  }).then(r => r.json());
+
+  function showMsg(text, type = 'error') {
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.className = `msg ${type}`;
+  }
+  function clearMsg() {
+    const el = document.getElementById('msg');
+    el.className = 'msg';
+    el.textContent = '';
+  }
+
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (loading) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Please wait...';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = btn.id === 'btn-login' ? 'Sign In'
+                    : btn.id === 'btn-signup' ? 'Create Account'
+                    : 'Send Reset Link';
+    }
+  }
+
+  function switchTab(tab) {
+    clearMsg();
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+    });
+    document.getElementById('form-login').classList.toggle('active', tab === 'login');
+    document.getElementById('form-signup').classList.toggle('active', tab === 'signup');
+    document.getElementById('reset-panel').classList.remove('active');
+    document.getElementById('auth-tabs').style.display = 'flex';
+  }
+
+  function showReset() {
+    clearMsg();
+    document.getElementById('form-login').classList.remove('active');
+    document.getElementById('auth-tabs').style.display = 'none';
+    document.getElementById('reset-panel').classList.add('active');
+  }
+
+  function hideReset() {
+    document.getElementById('reset-panel').classList.remove('active');
+    document.getElementById('auth-tabs').style.display = 'flex';
+    document.getElementById('form-login').classList.add('active');
+    clearMsg();
+  }
+
+  async function doLogin() {
+    clearMsg();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) { showMsg('Please enter your email and password.'); return; }
+    setLoading('btn-login', true);
+    const res = await api('token?grant_type=password', { email, password });
+    setLoading('btn-login', false);
+    if (res.access_token) {
+      localStorage.setItem('verdiqt_session', JSON.stringify(res));
+      showMsg('Signed in — loading your workspace...', 'success');
+      setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+    } else {
+      showMsg(res.error_description || 'Incorrect email or password. Please try again.');
+    }
+  }
+
+  async function doSignup() {
+    clearMsg();
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-confirm').value;
+    if (!name || !email || !password) { showMsg('Please fill in all fields.'); return; }
+    if (password.length < 8) { showMsg('Password must be at least 8 characters.'); return; }
+    if (password !== confirm) { showMsg('Passwords do not match.'); return; }
+    setLoading('btn-signup', true);
+    const res = await api('signup', { email, password, data: { full_name: name } });
+    setLoading('btn-signup', false);
+    if (res.id || res.user) {
+      showMsg('Account created! Check your email to confirm your address, then sign in.', 'success');
+      setTimeout(() => switchTab('login'), 3000);
+    } else {
+      showMsg(res.error_description || res.msg || 'Could not create account. Please try again.');
+    }
+  }
+
+  async function doReset() {
+    clearMsg();
+    const email = document.getElementById('reset-email').value.trim();
+    if (!email) { showMsg('Please enter your email address.'); return; }
+    setLoading('btn-reset', true);
+    const res = await api('recover', { email });
+    setLoading('btn-reset', false);
+    showMsg('If that email exists, a reset link has been sent. Check your inbox.', 'success');
+  }
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('form-login').classList.contains('active')) doLogin();
+    else if (document.getElementById('form-signup').classList.contains('active')) doSignup();
+    else if (document.getElementById('reset-panel').classList.contains('active')) doReset();
+  });
+
+  // Check if already logged in
+  const session = localStorage.getItem('verdiqt_session');
+  if (session) {
+    try {
+      const s = JSON.parse(session);
+      if (s.access_token) window.location.href = '/index.html';
+    } catch(e) { localStorage.removeItem('verdiqt_session'); }
+  }
+</script>
+</body>
+</html>
