@@ -548,7 +548,7 @@ body {
 
 /* ── AI DRAFT BANNER ──────────────────────────────────────── */
 
-.ai-banner { background: var(--bur); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #ffffff; line-height: 1.5; }
+.ai-banner { background: var(--bur-l); border: 0.5px solid var(--bur-border); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--bur); line-height: 1.5; }
 .ai-badge { width: 26px; height: 26px; border-radius: 50%; background: var(--bur); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
 
 /* ── SCROLLBAR ────────────────────────────────────────────── */

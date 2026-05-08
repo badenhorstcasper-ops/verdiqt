@@ -62,7 +62,6 @@ async function boot() {
   setupInstallPrompt();
   await renderDashboard();
   await updateBadges();
-  await loadSettings();
   checkForUpdate();
 }
 
@@ -540,7 +539,7 @@ async function renderCharges() {
   if (!CONTENT) return;
   const container = document.getElementById('charge-categories');
   container.innerHTML = Object.entries(CONTENT.charges).map(([key, charge]) => `
-    <span style="display:inline-flex;align-items:center;gap:5px;background:var(--bur-l);color:var(--bur);border:0.5px solid var(--bur-border);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;margin:2px" onclick="selectCharge('${key}')">
+    <span style="display:inline-flex;align-items:center;gap:5px;background:var(--bur);color:#ffffff;border:0.5px solid var(--bur-border);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;margin:2px" onclick="selectCharge('${key}')">
       ${charge.label}
     </span>
   `).join('') + `
@@ -607,7 +606,7 @@ function renderHearingStep(idx) {
     </label>
   `).join('');
   document.getElementById('hearing-prompts').innerHTML = step.prompts.map(p => `
-    <div style="padding:6px 0;border-bottom:0.5px solid var(--lg);font-style:italic;color:var(--bur)">"${p}"</div>
+    <div style="padding:6px 0;border-bottom:0.5px solid var(--lg);font-style:italic;color:var(--dg)">"${p}"</div>
   `).join('');
   document.getElementById('hearing-notes').value = '';
   document.getElementById('hearing-prev-btn').style.display = idx === 0 ? 'none' : 'inline-flex';
@@ -1098,7 +1097,7 @@ async function restoreData(e) {
 
 // ── AI SETTINGS ────────────────────────────────────────────────
 async function renderAISettings() {
-  const el = document.getElementById('page-content');
+  const el = document.getElementById('screen-ai-settings');
   const sub = userSubscription;
   const active = hasAIAccess();
   const planName = sub ? (sub.ai_unlimited ? 'LiveUpdate Subscription' : `Standard — ${sub.ai_credits} AI credits remaining`) : 'Basic (No AI)';
@@ -1106,7 +1105,7 @@ async function renderAISettings() {
   const statusText = active ? 'Active' : 'Inactive';
 
   el.innerHTML = `
-    <div class="screen active" id="screen-ai-settings">
+    <div>
       <div class="card" style="margin-bottom:16px">
         <div class="card-title">AI Document Generation</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
